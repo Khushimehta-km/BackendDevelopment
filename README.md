@@ -29,6 +29,8 @@ BackendDevelopment/
 ├── LAB/
 │   ├── Exp1/
 │   └── Exp12A/
+|   |__ Exp12B/
+
 │
 ├── THEORY/
 │   ├── Task1/
@@ -51,6 +53,10 @@ The `LAB` directory contains practical experiments completed as part of the cour
 ### Experiment 12A
 
 * [📁 Open Experiment 12A](./LAB/Exp12A)
+
+### Experiment 12B
+
+* [📁 Open Experiment 12b](./LAB/Exp12B)
 
 ---
 
