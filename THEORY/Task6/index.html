@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        li {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .delete {
+            background: red;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Todo List</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button onclick="addTask()">Add</button>
+
+    <ul id="taskList"></ul>
+</div>
+
+<script>
+
+    // Get tasks from localStorage
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    // Add task
+    function addTask() {
+        let taskInput = document.getElementById("taskInput");
+        let task = taskInput.value.trim();
+
+        if (task === "") {
+            alert("Please enter a task");
+            return;
+        }
+
+        tasks.push(task);
+
+        // Store permanently using localStorage
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        // Store current action using sessionStorage
+        sessionStorage.setItem("lastTask", task);
+
+        taskInput.value = "";
+
+        displayTasks();
+    }
+
+    // Display tasks
+    function displayTasks() {
+        let taskList = document.getElementById("taskList");
+
+        taskList.innerHTML = "";
+
+        tasks.forEach((task, index) => {
+
+            let li = document.createElement("li");
+
+            li.innerHTML = `
+                ${task}
+                <button class="delete" onclick="deleteTask(${index})">
+                    Delete
+                </button>
+            `;
+
+            taskList.appendChild(li);
+        });
+    }
+
+    // Delete task
+    function deleteTask(index) {
+
+        tasks.splice(index, 1);
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        displayTasks();
+    }
+
+    // Load tasks when page opens
+    displayTasks();
+
+</script>
+
+</body>
+</html>

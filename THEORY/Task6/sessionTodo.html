@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Todo - Session Storage</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        }
+
+        .todo-container {
+            width: 420px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #ff758c;
+        }
+
+        .add-btn {
+            background: #ff758c;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: #f45f78;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 25px;
+        }
+
+        li {
+            background: #fff1f4;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+        }
+
+        .delete-btn {
+            background: #ff5c5c;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #e64545;
+        }
+
+        .storage {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #ff758c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="todo-container">
+
+        <h1>🌸 My Todo List</h1>
+        <p class="subtitle">Tasks stay only for this session</p>
+
+        <div class="input-box">
+            <input type="text" id="taskInput" placeholder="What needs to be done?">
+            <button class="add-btn" onclick="addTask()">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <div class="storage">
+            🔐 Saved using Session Storage
+        </div>
+
+    </div>
+
+    <script>
+
+        let tasks = JSON.parse(sessionStorage.getItem("tasks")) || [];
+
+        function addTask() {
+
+            let input = document.getElementById("taskInput");
+            let task = input.value.trim();
+
+            if (task === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            tasks.push(task);
+
+            sessionStorage.setItem("tasks", JSON.stringify(tasks));
+
+            input.value = "";
+
+            displayTasks();
+        }
+
+        function displayTasks() {
+
+            let list = document.getElementById("taskList");
+
+            list.innerHTML = "";
+
+            tasks.forEach((task, index) => {
+
+                let li = document.createElement("li");
+
+                li.innerHTML = `
+                    <span>📝 ${task}</span>
+                    <button class="delete-btn" onclick="deleteTask(${index})">
+                        Delete
+                    </button>
+                `;
+
+                list.appendChild(li);
+            });
+        }
+
+        function deleteTask(index) {
+
+            tasks.splice(index, 1);
+
+            sessionStorage.setItem("tasks", JSON.stringify(tasks));
+
+            displayTasks();
+        }
+
+        displayTasks();
+
+    </script>
+
+</body>
+</html>
