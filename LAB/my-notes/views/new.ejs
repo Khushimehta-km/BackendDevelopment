@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Note</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<h1>Add New Note</h1>
+
+<form action="/notes" method="POST">
+
+    <label>Title:</label>
+    <input type="text" name="title">
+
+    <label>Content:</label>
+    <textarea name="content"></textarea>
+
+    <label>Category:</label>
+    <input type="text" name="category">
+
+    <button type="submit">Add Note</button>
+
+</form>
+
+<a href="/">Back to Notes</a>
+
+</body>
+</html>
