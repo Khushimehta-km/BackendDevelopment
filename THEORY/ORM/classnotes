@@ -1,0 +1,214 @@
+/*ORM sqlalchemy is most popular for python
+basic usage ye hai ki link krta hai differebt attributes vegehra ko different classes link hoti hai add on bhi hoti hai
+Agar tum **Backend / SQLAlchemy** ke context mein pooch rahi ho, toh **ORM Model** ko simple way mein samjho:
+
+### ORM kya hota hai?
+
+**ORM = Object Relational Mapping**
+
+Ye **Python objects/classes ko database tables se connect** karta hai.
+
+Normally SQL mein:
+
+```sql
+INSERT INTO users (name, age)
+VALUES ('Khushi', 20);
+```
+
+ORM mein tum Python code se kar sakti ho:
+
+```python
+user = User(name="Khushi", age=20)
+db.add(user)
+db.commit()
+```
+
+ORM automatically SQL query generate kar deta hai.
+
+---
+
+### ORM Model kya hai?
+
+ORM Model ek **Python class** hoti hai jo database ki **table represent** karti hai.
+
+Example SQLAlchemy:
+
+```python
+from sqlalchemy import Column, Integer, String
+from database import Base
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    age = Column(Integer)
+```
+
+Yahan:
+
+| Python             | Database        |
+| ------------------ | --------------- |
+| `User` class       | `users` table   |
+| `id`               | `id` column     |
+| `name`             | `name` column   |
+| `age`              | `age` column    |
+| `User(...)` object | Table ka ek row |
+
+So basically:
+
+**Model = database table ka Python representation.**
+
+### Ekdum visualise karo:
+
+```text
+Python Code
+    ↓
+User Model
+    ↓
+ORM (SQLAlchemy)
+    ↓
+SQL Query
+    ↓
+Database
+    ↓
+users table
+```
+
+For example:
+
+```python
+user = User(name="Khushi", age=20)
+```
+
+ORM isko roughly:
+
+```sql
+INSERT INTO users (name, age)
+VALUES ('Khushi', 20);
+```
+
+mein convert kar deta hai.
+
+**Isliye ORM ka main benefit:** tumhe har baar raw SQL likhne ki zarurat nahi padti.
+
+Haan, **`Base` hi pehle confusing lagta hai** 😭. Simple way mein:
+
+### `Base` kya hai?
+
+Jab hum SQLAlchemy mein model banate hain:
+
+```python
+class User(Base):
+```
+
+toh `Base` ek **parent/base class** hoti hai jo SQLAlchemy ko batati hai:
+
+> "Jo classes is `Base` se inherit hongi, unhe database ke ORM models samajhna."
+
+Usually `Base` aise banate hain:
+
+```python
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+```
+
+Ab:
+
+```python
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+```
+
+### Visualise karo
+
+```text
+Base
+ │
+ ├── User Model
+ │      ↓
+ │   users table
+ │
+ ├── Product Model
+ │      ↓
+ │   products table
+ │
+ └── Order Model
+        ↓
+     orders table
+```
+
+So **Base khud database table nahi hai.**
+
+It's basically a **common parent/class registry** jiske through SQLAlchemy ko pata chalta hai ki `User`, `Product`, `Order` etc. **ORM models hain**.
+
+### Ek line mein yaad rakho 🧠
+
+> **`Base = SQLAlchemy ke ORM models ka parent/base class.`**
+
+Aur jab tum `Base.metadata.create_all(engine)` likhti ho, SQLAlchemy `Base` ke andar registered models ki tables ko database mein create kar sakta hai.
+
+**Haan bhai, mostly YES. 🔥** यही ORM ka bada benefit hai.
+
+Agar tum **database change** kar rahi ho, for example:
+
+```python
+engine = create_engine("sqlite:///users.db")
+```
+
+se PostgreSQL par:
+
+```python
+engine = create_engine("postgresql://username:password@localhost/mydb")
+```
+
+toh tumhare **models same reh sakte hain**:
+
+```python
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    age = Column(Integer)
+```
+
+### Flow samjho:
+
+```text
+             SAME
+        ┌─────────────┐
+        │ User Model  │
+        │ Product     │
+        │ Order       │
+        └──────┬──────┘
+               ↓
+             ORM
+               ↓
+        ┌──────────────┐
+        │    ENGINE    │  ← yahan DB connection
+        └──────┬───────┘
+               ↓
+       ┌───────┴────────┐
+       ↓                ↓
+    SQLite          PostgreSQL
+```
+
+ORM tumhare Python models ko appropriate SQL mein translate karne mein help karta hai.
+
+**BUT ek important catch:** sirf URL change **har situation mein 100% enough nahi hota**. Different databases ke features/types/dialects alag ho sakte hain, aur connection driver bhi install karna padta hai.
+
+For example PostgreSQL ke liye usually driver chahiye:
+
+```bash
+pipenv install psycopg
+```
+
+So exam/interview ke liye line yaad rakho:
+
+> **ORM database-specific SQL ko abstract karta hai, so application/model code ko largely same rakhkar database change karna easier ho jata hai; mainly engine/connection configuration change hoti hai.**
+*/
